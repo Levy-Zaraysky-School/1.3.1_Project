@@ -10,6 +10,7 @@ from sprites.menus import TextBox
 from sprites.alien import Alien, generate_aliens
 import sprites.options as options
 from sprites.explosion import Explotion
+import sprites.scores as score
 
 pygame.init()
 
@@ -25,6 +26,8 @@ clock = pygame.time.Clock()
 
 # Game Variables
 cooldown = 500
+scores = score.score_load()["scores"]
+start_time = time.perf_counter()
 
 
 def main():
@@ -65,6 +68,10 @@ def main():
             explosion.sound.play()
             explosions.add(explosion)
             player.kill()
+            # Score Save
+            end_time = time.perf_counter()
+            scores.append(end_time-start_time)
+            score.score_save(scores)
             static = pygame.image.load(r"assets/images/Static.png")
             tick = 0
             while tick < 100:
@@ -116,6 +123,8 @@ def main():
         # Updating Screen
         pygame.display.update()
 def quit():
+    scores.append("Victory")
+    score.score_save(scores)
     pygame.quit()
     sys.exit()
 
